@@ -36,6 +36,116 @@ static int cmd_q(char *args) {
 	return -1;
 }
 
+static int cmd_si(char* args) {
+	if(args == NULL) {
+		cpu_exec(1);
+	} else {
+		volatile uint32_t n = atoi(args);
+		cpu_exec(n);
+	}
+	return 0;
+}
+
+static int cmd_info(char* args) {
+	if(args == NULL) {
+		printf("Please enter args r for register or w for watchpoint\n");
+		return 0;
+	}
+	if(strcmp(args, "r") == 0) {
+		printf("%%eax\t0x%x\t%d\n", cpu.eax, cpu.eax);
+		printf("%%ecx\t0x%x\t%d\n", cpu.ecx, cpu.ecx);
+		printf("%%edx\t0x%x\t%d\n", cpu.edx, cpu.edx);
+		printf("%%ebx\t0x%x\t%d\n", cpu.ebx, cpu.ebx);
+		printf("%%esp\t0x%x\t%d\n", cpu.esp, cpu.esp);
+		printf("%%ebp\t0x%x\t%d\n", cpu.ebp, cpu.ebp);
+		printf("%%esi\t0x%x\t%d\n", cpu.esi, cpu.esi);
+		printf("%%edi\t0x%x\t%d\n", cpu.edi, cpu.edi);
+		printf("%%eip\t0x%x\n", cpu.eip);
+	} else if(strcmp(args, "w") == 0) {
+		print_wp();
+	} else {
+		printf("Please enter args r for register or w for watchpoint\n");
+	}
+	return 0;
+}
+
+static int cmd_x(char *args) {
+	if(args == NULL) {
+		printf("Please enter args N and EXPR");
+		return 0;
+	}
+
+	char* N = strtok(args, " ");
+	char* EXPR = args + strlen(N) + 1; 
+
+	uint32_t n = atoi(N);
+	uint32_t exp;
+	bool *success = malloc(sizeof(bool));
+	*success = true;
+	exp = expr(EXPR, success);
+	if(*success == false) {
+		printf("Lexical analysis failed!\n");	
+		free(success);
+		return 0;
+	}
+	free(success);
+	
+	int i;
+	for(i = 0; i < n; i ++) {
+		printf("%8x:\t", exp);
+		int j;
+		for(j = 0; j < 4; j ++) {
+			printf("%02x ", hwaddr_read (exp + j, 1));
+		}
+		printf("\n");
+		exp += 4;
+	}
+	return 0;
+}
+
+static int cmd_p(char* args) {
+	bool *success = malloc(sizeof(bool));
+	*success = true;
+	uint32_t result = expr(args, success);
+	if(*success == false) {
+		printf("Lexical analysis failed!\n");	
+		free(success);
+		return 0;
+	} else {
+		printf("%d, 0x%x\n", result, result);
+	}
+	free(success);
+	return 0;
+}
+
+static int cmd_w(char* args) {
+	if(args == NULL) {
+		printf("Please enter args\n");
+		return 0;
+	}
+	bool *success = malloc(sizeof(bool));
+	*success = true;
+	uint32_t result = expr(args, success);
+	if(*success == false) {
+		printf("Lexical analysis failed!\n");	
+		free(success);
+		return 0;
+	}
+
+	WP* wp = new_wp();
+	strcpy(wp->what, args);
+	wp->value = result;
+
+	printf("Watchpoint %d, %s, %d, %x\n", wp->NO, wp->what, wp->value, wp->value);
+	return 0;
+}
+
+static int cmd_d(char* args) {
+	int N = atoi(args);
+	free_wp(N);
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -46,6 +156,12 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
+	{ "si", "Single step execution", cmd_si },
+	{ "info", "Print register of watchpoint information", cmd_info },
+	{ "x", "Print n 4-bytes from EXPR", cmd_x },
+	{ "p", "Evaluate Expression", cmd_p },
+	{ "w", "Set watchpoint", cmd_w },
+	{ "d", "Delete watchpoint", cmd_d },
 
 	/* TODO: Add more commands */
 
