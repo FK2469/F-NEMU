@@ -21,7 +21,7 @@ make_helper(concat(decode_i_, SUFFIX)) {
 	return DATA_BYTE;
 }
 
-#if DATA_BYTE == 1 || DATA_BYTE == 4
+#if DATA_BYTE == 1 ||/* DATA_BYTE == 2 ||*/ DATA_BYTE == 4
 /* sign immediate */
 make_helper(concat(decode_si_, SUFFIX)) {
 	op_src->type = OP_TYPE_IMM;
@@ -32,8 +32,9 @@ make_helper(concat(decode_si_, SUFFIX)) {
 	 *
 	op_src->simm = ???
 	 */
-	panic("please implement me");
-
+//	panic("please implement me");
+	unsigned int i = instr_fetch(eip, DATA_BYTE);
+	if(i >> 31 == 1) op_src->simm = -((~i) + 1); else op_src->simm = i;
 	op_src->val = op_src->simm;
 
 #ifdef DEBUG
@@ -148,6 +149,12 @@ make_helper(concat(decode_si_rm2r_, SUFFIX)) {
 	len += decode_si_b(eip + len);
 	return len;
 }
+//#else
+
+//make_helper(concat(decode_si2rm_, SUFFIX)) {
+//	return 0;
+//}
+
 #endif
 
 /* used by shift instructions */
