@@ -5,7 +5,8 @@ obj/nemu/cpu/exec/exec.o: nemu/src/cpu/exec/exec.c \
  nemu/include/cpu/decode/operand.h nemu/include/cpu/decode/modrm.h \
  nemu/src/cpu/exec/all-instr.h nemu/src/cpu/exec/prefix/prefix.h \
  nemu/src/cpu/exec/data-mov/mov.h nemu/src/cpu/exec/data-mov/xchg.h \
- nemu/src/cpu/exec/data-mov/push.h nemu/src/cpu/exec/control/jcc.h \
+ nemu/src/cpu/exec/data-mov/push.h nemu/src/cpu/exec/data-mov/movsx.h \
+ nemu/src/cpu/exec/data-mov/movzx.h nemu/src/cpu/exec/control/jcc.h \
  nemu/src/cpu/exec/control/call.h nemu/src/cpu/exec/control/jmp.h \
  nemu/src/cpu/exec/arith/add.h nemu/src/cpu/exec/arith/sub.h \
  nemu/src/cpu/exec/arith/cmp.h nemu/src/cpu/exec/arith/dec.h \
