@@ -11,7 +11,8 @@ obj/nemu/cpu/exec/exec.o: nemu/src/cpu/exec/exec.c \
  nemu/src/cpu/exec/data-mov/cwtl_cltd.h \
  nemu/src/cpu/exec/data-mov/leave.h nemu/src/cpu/exec/control/jcc.h \
  nemu/src/cpu/exec/control/call.h nemu/src/cpu/exec/control/jmp.h \
- nemu/src/cpu/exec/arith/add.h nemu/src/cpu/exec/arith/sub.h \
+ nemu/src/cpu/exec/arith/add.h nemu/src/cpu/exec/arith/adc.h \
+ nemu/src/cpu/exec/arith/sub.h nemu/src/cpu/exec/arith/sbb.h \
  nemu/src/cpu/exec/arith/cmp.h nemu/src/cpu/exec/arith/dec.h \
  nemu/src/cpu/exec/arith/inc.h nemu/src/cpu/exec/arith/neg.h \
  nemu/src/cpu/exec/arith/imul.h nemu/src/cpu/exec/arith/mul.h \
