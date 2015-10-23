@@ -7,8 +7,10 @@ static void do_execute () {
 	OPERAND_W(op_src, result);
 
 	/* TODO: Update EFLAGS. */
-	panic("please implement me");
-
+	//panic("please implement me");
+	if(MSB(op_src->val) == 0 && MSB(result) != MSB(op_src->val))
+		cpu.OF = 1; else cpu.OF = 0;
+	Updata_EFLAGS(result);
 	print_asm_template1();
 }
 

@@ -1,5 +1,9 @@
 #include "cpu/exec/helper.h"
-
+/*
+#define DATA_BYTE 1
+#include "movzx-template.h"
+#undef DATA_BYTE
+*/
 #define DATA_BYTE 2
 #include "movsx-template.h"
 #undef DATA_BYTE
@@ -8,4 +12,7 @@
 #include "movsx-template.h"
 #undef DATA_BYTE
 
-make_helper_v(movsx_b_rm2r)
+/* for instruction encoding overloading */
+
+make_helper_v(movsx_rm_b2r)
+

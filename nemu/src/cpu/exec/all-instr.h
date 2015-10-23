@@ -1,15 +1,15 @@
 #include "prefix/prefix.h"
 
+#include "data-mov/movsx.h"
+#include "data-mov/movzx.h"
 #include "data-mov/mov.h"
 #include "data-mov/xchg.h"
 #include "data-mov/push.h"
-#include "data-mov/movsx.h"
-#include "data-mov/movzx.h"
 #include "data-mov/pop.h"
-#include "data-mov/ret.h"
-#include "data-mov/cld.h"
-#include "data-mov/cwtl_cltd.h"
 #include "data-mov/leave.h"
+#include "data-mov/ret.h"
+#include "data-mov/cltd.h"
+#include "data-mov/cld.h"
 
 #include "control/jcc.h"
 #include "control/call.h"
@@ -28,7 +28,6 @@
 #include "arith/idiv.h"
 #include "arith/div.h"
 
-
 #include "logic/test.h"
 #include "logic/and.h"
 #include "logic/or.h"
@@ -41,6 +40,9 @@
 #include "logic/setcc.h"
 
 #include "string/rep.h"
+#include "string/stos.h"
+#include "string/movs.h"
+#include "string/cmps.h"
 
 #include "misc/misc.h"
 

@@ -3,13 +3,16 @@
 #define instr push
 
 static void do_execute() {
-	cpu.esp -= DATA_BYTE;
-	swaddr_write(cpu.esp, DATA_BYTE, op_src->val);
+	int len;
+	if(DATA_BYTE == 2)len = 2; else len = 4;
+//	if(DATA_BYTE == )
+	cpu.esp -= len;
+	swaddr_write(cpu.esp, len, op_src->val);
 	print_asm_template1();
 }
 
+make_instr_helper(rm)
 make_instr_helper(r)
-//make_instr_helper(m)
 make_instr_helper(i)
 
 #include "cpu/exec/template-end.h"

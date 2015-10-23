@@ -1,29 +1,146 @@
 #include "cpu/exec/template-start.h"
 
-#define instr je
+#define instr ja
 
 static void do_execute() {
-	if(cpu.ZF == 1) {
-		cpu.eip += op_src->val < (1 << (8 * DATA_BYTE - 1)) ? op_src->val : - ((1ll << 8 * DATA_BYTE) - op_src->val);
+	if(cpu.CF == 0 && cpu.ZF == 0) {
+		cpu.eip += op_src->val;
 	}
 	print_asm_template1();
 }
 
-make_instr_helper(i)
+make_instr_helper(si)
+
+#undef instr
+
+#define instr jae
+
+static void do_execute() {
+	if(cpu.CF == 0) {
+		cpu.eip += op_src->val;
+	}
+	print_asm_template1();
+}
+
+make_instr_helper(si)
+
+#undef instr
+
+#define instr jb
+
+static void do_execute() {
+	if(cpu.CF == 1) {
+		cpu.eip += op_src->val;
+	}
+	print_asm_template1();
+}
+
+make_instr_helper(si)
+
+#undef instr
+
+#define instr je
+
+static void do_execute() {
+	if(cpu.ZF == 1) {
+		cpu.eip += op_src->val;
+	}
+	print_asm_template1();
+}
+
+make_instr_helper(si)
 
 #undef instr
 
 #define instr jbe
 
 static void do_execute() {
-	printf("%d\n", DATA_BYTE);
 	if(cpu.ZF == 1 || cpu.CF == 1) {
-		cpu.eip += op_src->val < (1 << (8 * DATA_BYTE - 1)) ? op_src->val : - ((1ll << 8 * DATA_BYTE) - op_src->val);
+		cpu.eip += op_src->val;
 	}
 	print_asm_template1();
 }
 
-make_instr_helper(i)
+make_instr_helper(si)
+
+#undef instr
+
+#define instr jl
+
+static void do_execute() {
+	if(cpu.SF != cpu.OF) {
+		cpu.eip += op_src->val;
+	}
+	print_asm_template1();
+}
+
+make_instr_helper(si)
+
+#undef instr
+
+
+#define instr jle
+
+static void do_execute() {
+	if(cpu.ZF == 1 || cpu.SF != cpu.OF) {
+		cpu.eip += op_src->val;
+	}
+	print_asm_template1();
+}
+
+make_instr_helper(si)
+
+#undef instr
+
+#define instr jg
+
+static void do_execute() {
+	if(cpu.ZF == 0 && cpu.SF == cpu.OF) {
+		cpu.eip += op_src->val;
+	}
+	print_asm_template1();
+}
+
+make_instr_helper(si)
+
+#undef instr
+
+#define instr jge
+
+static void do_execute() {
+	if(cpu.SF == cpu.OF) {
+		cpu.eip += op_src->val;
+	}
+	print_asm_template1();
+}
+
+make_instr_helper(si)
+
+#undef instr
+
+#define instr jne
+
+static void do_execute() {
+	if(cpu.ZF == 0) {
+		cpu.eip += op_src->val;
+	}
+	print_asm_template1();
+}
+
+make_instr_helper(si)
+
+#undef instr
+
+#define instr jns
+
+static void do_execute() {
+	if(cpu.SF == 0) {
+		cpu.eip += op_src->val;
+	}
+	print_asm_template1();
+}
+
+make_instr_helper(si)
 
 #undef instr
 
