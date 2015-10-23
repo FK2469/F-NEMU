@@ -21,7 +21,7 @@ make_helper(concat(decode_i_, SUFFIX)) {
 	return DATA_BYTE;
 }
 
-#if DATA_BYTE == 1 ||/* DATA_BYTE == 2 ||*/ DATA_BYTE == 4
+#if DATA_BYTE == 1 || DATA_BYTE == 2 || DATA_BYTE == 4
 /* sign immediate */
 make_helper(concat(decode_si_, SUFFIX)) {
 	op_src->type = OP_TYPE_IMM;
@@ -34,7 +34,7 @@ make_helper(concat(decode_si_, SUFFIX)) {
 	 */
 //	panic("please implement me");
 	unsigned int i = instr_fetch(eip, DATA_BYTE);
-	if(i >> 31 == 1) op_src->simm = -((~i) + 1); else op_src->simm = i;
+	if(i >> (DATA_BYTE * 8 - 1) == 1) op_src->simm = -((1ll << 8 * DATA_BYTE) -i); else op_src->simm = i;
 	op_src->val = op_src->simm;
 
 #ifdef DEBUG
@@ -79,6 +79,11 @@ static int concat3(decode_rm_, SUFFIX, _internal) (swaddr_t eip, Operand *rm, Op
 	return len;
 }
 
+make_helper(concat(decode_n_, SUFFIX)) {
+	op_src->val = op_dest->val = 0;
+	op_src->size = op_dest->size = DATA_BYTE;
+	return 0;
+}
 /* Eb <- Gb
  * Ev <- Gv
  */
@@ -126,6 +131,34 @@ make_helper(concat(decode_i2rm_, SUFFIX)) {
 make_helper(concat(decode_i2r_, SUFFIX)) {
 	decode_r_internal(eip, op_dest);
 	return decode_i(eip);
+}
+
+/* used for movsx,movzx */
+
+make_helper(concat(decode_rm_b2r_, SUFFIX)) {
+	Operand *rm = op_src;
+	Operand *reg = op_dest;
+	rm->size = 1;
+	int len = read_ModR_M(eip, rm, reg);
+	reg->val = REG(reg->reg);
+
+#ifdef DEBUG
+	snprintf(reg->str, OP_STR_SIZE, "%%%s", REG_NAME(reg->reg));
+#endif
+	return len;
+}
+
+make_helper(concat(decode_rm_w2r_, SUFFIX)) {
+	Operand *rm = op_src;
+	Operand *reg = op_dest;
+	rm->size = 2;
+	int len = read_ModR_M(eip, rm, reg);
+	reg->val = REG(reg->reg);
+
+#ifdef DEBUG
+	snprintf(reg->str, OP_STR_SIZE, "%%%s", REG_NAME(reg->reg));
+#endif
+	return len;
 }
 
 /* used by unary operations */

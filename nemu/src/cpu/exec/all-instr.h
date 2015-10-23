@@ -5,6 +5,11 @@
 #include "data-mov/push.h"
 #include "data-mov/movsx.h"
 #include "data-mov/movzx.h"
+#include "data-mov/pop.h"
+#include "data-mov/ret.h"
+#include "data-mov/cld.h"
+#include "data-mov/cwtl_cltd.h"
+#include "data-mov/leave.h"
 
 #include "control/jcc.h"
 #include "control/call.h"
