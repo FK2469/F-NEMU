@@ -1,9 +1,19 @@
 # This file will be included by the Makefile under the project directory.
 
 FLOAT_OBJ := $(FLOAT:.a=.o)
+FLOAT_SRC := lib-common/FLOAT.c
+FLOAT_DIR := lib-common
+
+FLOAT_CFLAGS_EXTRA := -c -m32 -fno-builtin -I$(FLOAT_DIR)
+FLOAT_BIN := FLOAT
 
 $(FLOAT): $(FLOAT_OBJ)
 	ar r $(FLOAT) $(FLOAT_OBJ)
 
+$(FLOAT_OBJ): $(FLOAT_SRC)
+	$(call make_command, $(CC), $(FLOAT_CFLAGS_EXTRA), cc $@, $^)
+
 # TODO: write a rule for generating $(FLOAT_OBJ)
+
+
 

@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, DINT, HINT, REG, EQ, UEQ, AND, OR, NOT, DEREF
+	NOTYPE = 256, DINT, HINT, REG, EQ, UEQ, AND, OR, NOT, DEREF,VAR
 
 	/* TODO: Add more token types */
 
@@ -23,20 +23,21 @@ static struct rule {
 	 */
 
 	{" +",	NOTYPE},				// spaces
-	{"0x[0-9|a-f|A-F]*", HINT},		// hex number
-	{"0|[1-9][0-9]*", DINT},		// decimalism number
-	{"\\$[a-z|A-Z]+", REG},			// register
+	{"0x[0-9|a-f|A-F]*", HINT},			// hex number
+	{"0|[1-9][0-9]*", DINT},			// decimalism number
+	{"\\$[a-z|A-Z]+", REG},				// register
 	{"\\+", '+'},					// plus
-	{"-", '-'},						// minus
+	{"-", '-'},					// minus
 	{"\\*", '*'},					// multiple
-	{"/", '/'},						// besides
+	{"/", '/'},					// besides
 	{"\\(", '('},					// left bracket
 	{"\\)", ')'},					// right bracket
-	{"==", EQ},						// equal
+	{"==", EQ},					// equal
 	{"!=", UEQ},					// unequal
 	{"&&", AND},					// and
 	{"\\|\\|", OR},					// or
-	{"!", NOT}						// not
+	{"!", NOT},					// not
+	{"[a-zA-Z_]+[0-9a-zA-Z_]*", VAR}		// var
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -123,6 +124,12 @@ static bool make_token(char *e) {
 					case OR:
 					case NOT:
 						tokens[nr_token] = t;
+						nr_token ++;
+						break;
+					case VAR:
+						tokens[nr_token] = t;
+						strncpy(tokens[nr_token].str, substr_start, substr_len);
+						tokens[nr_token].str[substr_len] = '\0';
 						nr_token ++;
 						break;
 					default: panic("please implement me");
@@ -248,8 +255,11 @@ uint32_t get_register(char* reg) {
 	return 0;
 }
 
+extern int find_var(char *str);
+
+int Exp_flag = 0;
+
 uint32_t eval(int p, int q, bool *success) {
-	//printf("%d, %d\n", p, q);
 	if(p > q) {
 		printf("Bad expression!\n");
 		*success = false;
@@ -259,6 +269,15 @@ uint32_t eval(int p, int q, bool *success) {
 		if(tokens[p].type == DINT) sscanf(tokens[p].str, "%d", &val);
 		else if(tokens[p].type == HINT) sscanf(tokens[p].str, "%x", &val);
 		else if(tokens[p].type == REG) val = get_register(tokens[p].str);
+		else if(tokens[p].type == VAR) {
+			Exp_flag = 1;
+			val = find_var(tokens[p].str);
+			if(val == -1) {
+			printf("No var matched!\n");
+			*success = false;
+			return 0;
+			}
+		} 
 		else {
 			printf("No number matched!\n");
 			*success = false;
@@ -314,6 +333,7 @@ uint32_t expr(char *e, bool *success) {
 				tokens[i].type = DEREF;
 				}
 	}
+	/* TEST: printf("Test func:expr(char*,bool*)\n and the nr_token is %d\n",nr_token); */
 	uint32_t result = eval(0, nr_token-1, success);
 	return result;
 }

@@ -1,3 +1,5 @@
+STU_ID = 141220000
+
 # DO NOT modify the following code!!!
 
 GITFLAGS = -q --author='tracer-ics2015 <tracer@njuics.org>' --no-verify --allow-empty

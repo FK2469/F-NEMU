@@ -75,9 +75,38 @@ void load_elf_tables(int argc, char *argv[]) {
 
 	free(sh);
 	free(shstrtab);
-
 	assert(strtab != NULL && symtab != NULL);
 
 	fclose(fp);
 }
 
+
+int find_var(char *str) {
+	int i;
+	for(i = 0; i < nr_symtab_entry; ++ i) {
+		if(strcmp(str, strtab + symtab[i].st_name) == 0) return symtab[i].st_value;
+	}
+	return -1;
+}
+
+bool find_func(int addr, char *str) {
+	int i;
+	for(i = 0; i < nr_symtab_entry; ++ i) {
+		//printf("%x %x\n", symtab[i].st_value, symtab[i].st_value + symtab[i].st_size);
+		if(addr >= symtab[i].st_value && addr < symtab[i].st_value + symtab[i].st_size) {
+			strcpy(str, strtab + symtab[i].st_name);
+		//	printf("*\n");
+			return true; 
+		}
+	}
+	return false;
+}
+
+
+void print() {
+	int i;
+	for(i = 0; i < nr_symtab_entry; ++ i) {
+		printf("%s\n", strtab + symtab[i].st_name);
+	}	
+	
+}

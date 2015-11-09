@@ -68,7 +68,7 @@ void free_wp(int N) {
 }
 
 void print_wp() {
-	printf("Num\tWhat\tValue\tValue\n");
+	printf("Num\tExpression\tValue\tValue\n");
 	WP* p = head;
 	while(p != NULL) {
 		printf("%d\t%s\t%d\t%x\n", p->NO, p->what, p->value, p->value);
@@ -84,6 +84,7 @@ bool check_watchpoint() {
 		uint32_t val = expr(p->what, success);
 		if(val != p->value) {
 			printf("Watchpint %d occurred!\n", p->NO);
+			printf("The \"%s\"'s value is changed!\n",p->what);
 			return true;
 		}
 		p = p->next;

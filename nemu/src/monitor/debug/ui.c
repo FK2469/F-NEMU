@@ -103,6 +103,8 @@ static int cmd_x(char *args) {
 	return 0;
 }
 
+extern int Exp_flag;
+
 static int cmd_p(char* args) {
 	bool *success = malloc(sizeof(bool));
 	*success = true;
@@ -112,7 +114,7 @@ static int cmd_p(char* args) {
 		free(success);
 		return 0;
 	} else {
-		printf("%d, 0x%x\n", result, result);
+		printf(Exp_flag == 1?"0x%x\n":"%d\n",result);
 	}
 	free(success);
 	return 0;
@@ -146,6 +148,27 @@ static int cmd_d(char* args) {
 	return 0;
 }
 
+
+extern bool find_func(int addr, char *str);
+static int cmd_bt(char *args) {
+	int ebp = cpu.ebp;
+	int addr = cpu.eip;
+	char str[32];
+	if(!find_func(addr, str)) {
+		printf("No stack.\n");
+		return 0;
+	}
+	int cnt = 0;
+	while(find_func(addr, str)) {
+		printf("#%d 0x%x in %s(%d, %d, %d, %d)\n", cnt ++, addr, str, 
+				swaddr_read(ebp + 0x8, 4), swaddr_read(ebp + 0xc, 4), 
+				swaddr_read(ebp + 0x10, 4), swaddr_read(ebp + 0x14, 4));
+		addr = swaddr_read(ebp + 4, 4);
+		ebp  = swaddr_read(ebp, 4);
+	}
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -162,6 +185,7 @@ static struct {
 	{ "p", "Evaluate Expression", cmd_p },
 	{ "w", "Set watchpoint", cmd_w },
 	{ "d", "Delete watchpoint", cmd_d },
+	{ "bt","Print the stack",cmd_bt },
 
 	/* TODO: Add more commands */
 
