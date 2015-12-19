@@ -79,6 +79,7 @@ int load_addr(swaddr_t eip, ModR_M *m, Operand *rm) {
 
 	rm->type = OP_TYPE_MEM;
 	rm->addr = addr;
+	rm->sreg = base_reg == (R_EBP || base_reg == R_ESP)?	 R_SS : R_DS;
 
 	return instr_len;
 }
@@ -109,7 +110,8 @@ int read_ModR_M(swaddr_t eip, Operand *rm, Operand *reg) {
 	}
 	else {
 		int instr_len = load_addr(eip, &m, rm);
-		rm->val = swaddr_read(rm->addr, rm->size);
+		rm->val = swaddr_read(rm->addr, rm->size,rm->sreg);
+
 		return instr_len;
 	}
 }

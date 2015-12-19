@@ -161,10 +161,10 @@ static int cmd_bt(char *args) {
 	int cnt = 0;
 	while(find_func(addr, str)) {
 		printf("#%d 0x%x in %s(%d, %d, %d, %d)\n", cnt ++, addr, str, 
-				swaddr_read(ebp + 0x8, 4), swaddr_read(ebp + 0xc, 4), 
-				swaddr_read(ebp + 0x10, 4), swaddr_read(ebp + 0x14, 4));
-		addr = swaddr_read(ebp + 4, 4);
-		ebp  = swaddr_read(ebp, 4);
+				swaddr_read(ebp + 0x8, 4,R_SS), swaddr_read(ebp + 0xc, 4,R_SS), 
+				swaddr_read(ebp + 0x10, 4,R_SS), swaddr_read(ebp + 0x14, 4,R_SS));
+		addr = swaddr_read(ebp + 4, 4,R_SS);
+		ebp  = swaddr_read(ebp, 4,R_SS);
 	}
 	return 0;
 }

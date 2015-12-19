@@ -2,14 +2,16 @@
 
 #define instr call
 
+
 static void do_execute() {
+	int len = instr_len();
 	cpu.esp -= 4;
-	if(op_src->val < 0x100000 || 0xffffffff - op_src->val < 0x100000) {
-		swaddr_write(cpu.esp, 4, cpu.eip + 4);
+	swaddr_write(cpu.esp, 4, cpu.eip + len, R_SS);
+	if(op_src->type == OP_TYPE_IMM) {
 		cpu.eip += op_src->val;
+		snprintf(op_src->str, OP_STR_SIZE, "$0x%x", cpu.eip + len + 1);
 	}else {
-		swaddr_write(cpu.esp, 4, cpu.eip + 1);
-		cpu.eip = op_src->val - 2;
+		cpu.eip = op_src->val - len - 1;
 	}
 	print_asm_template1();
 }

@@ -26,16 +26,17 @@
 
 #define REG(index) concat(reg_, SUFFIX) (index)
 #define REG_NAME(index) concat(regs, SUFFIX) [index]
+#define SREG_NAME(index) sregs[index]
 
-#define MEM_R(addr) swaddr_read(addr, DATA_BYTE)
-#define MEM_W(addr, data) swaddr_write(addr, DATA_BYTE, data)
+#define MEM_R(addr, sreg) swaddr_read(addr, DATA_BYTE, sreg)
+#define MEM_W(addr, data, sreg) swaddr_write(addr, DATA_BYTE, data, sreg)
 
 #define OPERAND_W(op, src) concat(write_operand_, SUFFIX) (op, src)
 
 #define MSB(n) ((DATA_TYPE)(n) >> ((DATA_BYTE << 3) - 1))
 
-#define Updata_EFLAGS(result) int i;\
+#define Update_EFLAGS(result) int i;\
     cpu.PF = 1;\
     for(i = 0; i < 8; ++ i) cpu.PF ^= (result & (1 << i)) >> i;\
     cpu.ZF = (result == 0);\
-    cpu.SF = result >> (8 * DATA_BYTE - 1);
+    cpu.SF = MSB(result);

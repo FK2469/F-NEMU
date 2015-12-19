@@ -21,4 +21,3 @@ void ramdisk_write(uint8_t *buf, uint32_t offset, uint32_t len) {
 	memcpy(RAMDISK_START + offset, buf, len);
 }
 
-

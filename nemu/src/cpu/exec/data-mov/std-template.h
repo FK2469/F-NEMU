@@ -1,10 +1,10 @@
 #include "cpu/exec/template-start.h"
 
-#define instr cld
+#define instr std
 
 static void do_execute() {
-	cpu.DF = 0;
-	print_asm("cld"); 
+	cpu.DF = 1;
+	print_asm("std");
 }
 
 make_instr_helper(n)

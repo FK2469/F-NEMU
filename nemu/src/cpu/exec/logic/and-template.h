@@ -9,7 +9,7 @@ static void do_execute () {
 	/* TODO: Update EFLAGS. */
 	//panic("please implement me");
 	cpu.CF = cpu.OF = 0;
-	Updata_EFLAGS(result);
+	Update_EFLAGS(result);
 	print_asm_template2();
 }
 

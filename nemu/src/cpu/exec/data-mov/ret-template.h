@@ -3,7 +3,7 @@
 #define instr ret
 
 static void do_execute() {
-	uint32_t result = swaddr_read(cpu.esp, 4);
+	uint32_t result = swaddr_read(cpu.esp, 4,R_SS);
 	cpu.esp += 4 + op_src->val;
 	cpu.eip = result;
 	if(op_src->val == 0) print_asm("ret"); else {
