@@ -19,8 +19,11 @@ void init_cond();
 /* Initialization phase 1
  * The assembly code in start.S will finally jump here.
  */
+//static int x;
 void init() {
 #ifdef IA32_PAGE
+//	int *xx = va_to_pa(&x);
+//	*xx = 1;
 	/* We must set up kernel virtual memory first because our kernel thinks it 
 	 * is located at 0xc0100000, which is set by the linking options in Makefile.
 	 * Before setting up correct paging, no global variable can be used. */
@@ -80,7 +83,7 @@ void init_cond() {
 
 	/* Load the program. */
 	uint32_t eip = loader();
-	
+
 #if defined(IA32_PAGE) && defined(HAS_DEVICE)
 	/* Read data in the video memory to check whether 
 	 * the test data is written sucessfully.
@@ -90,20 +93,16 @@ void init_cond() {
 	/* Clear the test data we just written in the video memory. */
 	video_mapping_clear();
 #endif
-
 #ifdef IA32_PAGE
 	/* Set the %esp for user program, which is one of the
 	 * convention of the "advanced" runtime environment. */
 	asm volatile("movl %0, %%esp" : : "i"(KOFFSET));
 #endif
-
+//HIT_GOOD_TRAP;
 	/* Keep the `bt' command happy. */
 	asm volatile("movl $0, %ebp");
 	asm volatile("subl $16, %esp");
 
-//	asm volatile("movl $0xc0146004, %eax");
-//	asm volatile("movl %eax, %cr3");
-	
 	/* Here we go! */
 	((void(*)(void))eip)();
 

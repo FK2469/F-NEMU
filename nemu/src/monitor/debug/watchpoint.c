@@ -10,7 +10,6 @@ void init_wp_list() {
 	int i;
 	for(i = 0; i < NR_WP; i ++) {
 		wp_list[i].NO = i;
-		wp_list[i].what = (char*)malloc(64*sizeof(char));
 		wp_list[i].next = &wp_list[i + 1];
 	}
 	wp_list[NR_WP - 1].next = NULL;
@@ -19,75 +18,87 @@ void init_wp_list() {
 	free_ = wp_list;
 }
 
-/* TODO: Implement the functionality of watchpoint */
-WP* new_wp() {
-	if(free_ == NULL) {
-		printf("No more free watchpoints!\n");
-		assert(0);
-	}
+extern bool flag;
 
-	WP* wp = free_;
-	free_ = free_->next;
-	wp->next = NULL;
-
-	if(head == NULL) {
-		head = wp;
+void new_wp(char *args) {
+	WP *new_ = free_;
+	if (head == NULL) {
+		head = new_;
+		new_->NO = 1;
 	} else {
-		WP* p = head;
-		while(p->next != NULL) p = p->next;
-		p->next = wp;
+		WP *tail = head;
+		while (tail->next != NULL) tail = tail->next;
+		tail->next = new_;
+		new_->NO = tail->NO + 1;
 	}
-
-	return wp;
+	WP *nex = free_->next;
+	new_->next = NULL;
+	free_ = nex;
+	strcpy(new_->str, args);
+	new_->str[strlen(args)] = '\0';
+	new_->last_value = expr(args, &flag);
 }
 
-void free_wp(int N) {
-	WP* p = head;
-	while(p->NO != N && p != NULL) p = p->next;
-	if(p == NULL) {
-		printf("Free watchpint failed: No watchpoint%d\n", N);
+void print_wp(int op);
+
+void free_wp(int n) {
+	WP *wp = head;
+	if(head == NULL) {
+		print_wp(0);
 		return;
 	}
-
-	WP* wp = p;
-	if(wp == head) {
-		head = head->next;
-	} else {
-		p = head;
-		while(p->next != wp) p = p->next;
-		p->next = wp->next;
-	}
-	wp->next = NULL;
+	while (n -- && wp->next != NULL) wp = wp->next;
+	WP *tail = free_;
 	if(free_ == NULL) {
 		free_ = wp;
 	} else {
-		p = free_;
-		while(p->next != NULL) p = p->next;
-		p->next = wp;
+		while (tail->next != NULL) tail = tail->next;
+		tail->next = wp;
 	}
-}
-
-void print_wp() {
-	printf("Num\tExpression\tValue\tValue\n");
-	WP* p = head;
-	while(p != NULL) {
-		printf("%d\t%s\t%d\t%x\n", p->NO, p->what, p->value, p->value);
+	WP *p = head;
+	if (p != wp) {
+		while (p->next != wp) p = p->next;
+		p->next = wp->next;
+		wp->next = NULL;
+		p = p->next;
+	} else {
+		head = head->next;
+		wp->next = NULL;
+		p = head;
+	}
+	while (p != NULL) {
+		p->NO --;
 		p = p->next;
 	}
 }
 
-bool check_watchpoint() {
-	WP* p = head;
-	while(p != NULL) {
-		bool* success = malloc(sizeof(bool));
-		*success = true;
-		uint32_t val = expr(p->what, success);
-		if(val != p->value) {
-			printf("Watchpint %d occurred!\n", p->NO);
-			printf("The \"%s\"'s value is changed!\n",p->what);
-			return true;
+void check_wp(int *nemu_state) {
+	WP *wp = head;
+	int value = 0;
+	while(wp != NULL) {
+		value = expr(wp->str, &flag);
+		if (value != wp->last_value) {
+			printf("The \"%s\"'s value is changed!\n",wp->str);
+			wp->last_value = value;
+			*nemu_state = 0;
 		}
-		p = p->next;
+		wp = wp->next;
 	}
-	return false;
+	if(*nemu_state == 0)print_wp(0);
 }
+
+#define DELETE 1
+
+void print_wp(int op) {
+	if (head == NULL) {
+		if (op != DELETE) printf("There is no watchpoint!\n");
+	} else {
+		WP *p = head;
+		while (p != NULL) {
+			printf(p->str[0] == '$'?
+					"#%d: %s = 0x%x\n":"#%d: %s = %d\n", p->NO, p->str, p->last_value);
+			p = p->next;
+		}
+	}
+}
+

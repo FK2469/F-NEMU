@@ -42,6 +42,7 @@ int last_key_code(void) {
 void
 keyboard_event() {
 	key_code = in_byte(0x60);
+//	printf("%x\n", key_code);
 	press_key(key_code);
 }
 

@@ -1,4 +1,5 @@
 #include "common.h"
+#include <string.h>
 
 typedef struct {
 	char *name;
@@ -32,3 +33,62 @@ void ide_write(uint8_t *, uint32_t, uint32_t);
 
 /* TODO: implement a simplified file system here. */
 
+typedef struct {
+	bool opened;
+	uint32_t offset;
+} Fstate;
+
+Fstate FD[NR_FILES + 3]; 
+
+int fs_open(const char *pathname, int flags);	/* 在我们的实现中可以忽略flags */
+int fs_read(int fd, void *buf, int len);
+int fs_write(int fd, void *buf, int len);
+int fs_lseek(int fd, int offset, int whence);
+int fs_close(int fd);
+
+int fs_open(const char *pathname, int flags) {
+	int i;
+//	Log("%s", pathname);
+	for(i = 0; i < NR_FILES; ++ i) if(strcmp(pathname, file_table[i].name) == 0) break;
+	assert(i < NR_FILES);
+	if(i < NR_FILES) {
+		FD[i + 3].opened = true;
+		FD[i + 3].offset = 0;//file_table[i].disk_offset;
+		return i + 3;
+	}
+	return -1;
+}
+
+int fs_read(int fd, void *buf, int len){
+	if(!FD[fd].opened) return -1;
+//	assert(FD[fd].offset + len <= file_table[fd-3].size);
+	int remain = file_table[fd-3].size - FD[fd].offset;
+	if(remain < len) len = remain;
+	ide_read(buf, file_table[fd-3].disk_offset + FD[fd].offset, len);
+	FD[fd].offset += len;
+	return len;
+	if(strlen(buf) == 0) return -1; else return strlen(buf);
+}
+
+int fs_write(int fd, void *buf, int len) {
+	if(!FD[fd].opened) return -1;
+	assert(FD[fd].offset + len < file_table[fd-3].size);
+	ide_write(buf, FD[fd].offset, len);
+	FD[fd].offset += len;
+	return len;
+}
+
+int fs_lseek(int fd, int offset, int whence) {
+	switch (whence) {
+		case SEEK_SET : FD[fd].offset = offset; break;
+		case SEEK_CUR : FD[fd].offset += offset; break;
+		case SEEK_END : FD[fd].offset = file_table[fd-3].size + offset; break;
+		default : assert(0);
+	}
+	return FD[fd].offset;
+}
+
+int fs_close(int fd) {
+	FD[fd].opened = false;
+	return 0;
+}

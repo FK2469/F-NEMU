@@ -4,8 +4,8 @@
 
 static void do_execute() {
 	cpu.esp = cpu.ebp;
-	DATA_TYPE result = swaddr_read(cpu.esp, DATA_BYTE,R_SS);
-	cpu.esp += DATA_BYTE;
+	DATA_TYPE result = swaddr_read(cpu.esp, 4, R_SS);
+	cpu.esp += 4;
 	cpu.ebp = result;
 	print_asm("leave");
 }

@@ -8,7 +8,7 @@ static void do_execute() {
 	snprintf(op_src->str, 11, "%%ds:(%%esi)");
 	snprintf(op_dest->str, 11, "%%es:(%%edi)");
 
-	swaddr_write(cpu.edi, DATA_BYTE, swaddr_read(cpu.esi, DATA_BYTE,R_DS),R_ES);
+	swaddr_write(cpu.edi, DATA_BYTE, swaddr_read(cpu.esi, DATA_BYTE, R_DS), R_ES);
 	cpu.edi += cpu.DF == 0? +DATA_BYTE : -DATA_BYTE;
 	cpu.esi += cpu.DF == 0? +DATA_BYTE : -DATA_BYTE;
 	print_asm_template2();

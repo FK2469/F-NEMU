@@ -1,6 +1,6 @@
 ##### global settings #####
 
-.PHONY: nemu entry all_testcase kernel run gdb test submit clean
+.PHONY: nemu entry all_testcase kernel run gdb test submit clean count
 
 CC := gcc
 LD := ld
@@ -10,7 +10,6 @@ LIB_COMMON_DIR := lib-common
 NEWLIBC_DIR := $(LIB_COMMON_DIR)/newlib
 NEWLIBC := $(NEWLIBC_DIR)/libc.a
 FLOAT := obj/$(LIB_COMMON_DIR)/FLOAT.a
-
 include config/Makefile.git
 include config/Makefile.build
 
@@ -52,15 +51,16 @@ clean: clean-cpp
 
 ##### some convinient rules #####
 
-USERPROG := obj/testcase/hello-str
+USERPROG := $(game_BIN)
+#USERPROG := obj/testcase/hello
+
 #ENTRY := $(USERPROG)
 ENTRY := $(kernel_BIN)
-
 entry: $(ENTRY)
 	objcopy -S -O binary $(ENTRY) entry
 
 run: $(nemu_BIN) $(USERPROG) entry
-	$(call git_commit, "run")
+	$(call git_commit, "run", $(GITFLAGS))
 	$(nemu_BIN) $(USERPROG)
 
 gdb: $(nemu_BIN) $(USERPROG) entry
@@ -71,3 +71,10 @@ test: $(nemu_BIN) $(testcase_BIN) entry
 
 submit: clean
 	cd .. && tar cvj $(shell pwd | grep -o '[^/]*$$') > $(STU_ID).tar.bz2
+
+tar=.
+
+count: 
+	$(call git_commit, "count", $(GITFLAGS2))
+	./.count.sh $(tar)
+

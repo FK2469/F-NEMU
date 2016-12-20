@@ -1,11 +1,12 @@
 nemu_CFLAGS_EXTRA := -ggdb3 -O2
 $(eval $(call make_common_rules,nemu,$(nemu_CFLAGS_EXTRA)))
 
-nemu_LDFLAGS := -lreadline
+nemu_LDFLAGS := -lreadline -lSDL
+
 
 $(nemu_BIN): $(nemu_OBJS)
 	$(call make_command, $(CC), $(nemu_LDFLAGS), ld $@, $^)
-	$(call git_commit, "compile NEMU")
+	$(call git_commit, "compile NEMU", $(GITFLAGS))
 
 
 ##### rules for generating some preprocessing results #####

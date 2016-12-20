@@ -31,9 +31,9 @@ void write_back(uint32_t set, uint32_t line, hwaddr_t addr) {
 	uint32_t col;
 	for(col = 0; col < NR_COL; ++ col) {
 #if LEVEL == MAX_LEVEL
-    dram_write((addr & ~COL_MASK) + col, 1, cache.set[set].data[line][col]);
+		dram_write((addr & ~COL_MASK) + col, 1, cache.set[set].data[line][col]);
 #else 
-    concat3(cache_write_, LEVEL, I)((addr & ~COL_MASK) + col, 1, cache.set[set].data[line][col]);
+		concat3(cache_write_, LEVEL, I)((addr & ~COL_MASK) + col, 1, cache.set[set].data[line][col]);
 #endif
 	}
 
@@ -47,9 +47,9 @@ void write_cache(uint32_t set, uint32_t line, uint32_t flag, uint32_t addr) {
 	uint32_t col;
 	for(col = 0; col < NR_COL; ++ col) {
 #if LEVEL == MAX_LEVEL
-	cache.set[set].data[line][col] = dram_read((addr & ~COL_MASK) + col, 1);
+		cache.set[set].data[line][col] = dram_read((addr & ~COL_MASK) + col, 1);
 #else
-	cache.set[set].data[line][col] = concat3(cache_read_, LEVEL, I)((addr & ~COL_MASK) + col, 1);
+		cache.set[set].data[line][col] = concat3(cache_read_, LEVEL, I)((addr & ~COL_MASK) + col, 1);
 #endif
 	}
 }
@@ -106,10 +106,10 @@ void cache_set_write(hwaddr_t addr, void *data, uint8_t *mask) {
 		if(cache.set[set].valid[line]) {
 			if(cache.set[set].flag[line] == flag) {
 #ifdef WRITE_ALLOCATE	
-			find = true;
+				find = true;
 #endif
-			cache.set[set].dirty[line] = true;
-			memcpy_with_mask(cache.set[set].data[line] + col, data, BURST_LEN, mask);
+				cache.set[set].dirty[line] = true;
+				memcpy_with_mask(cache.set[set].data[line] + col, data, BURST_LEN, mask);
 				break;
 			}
 		} else {

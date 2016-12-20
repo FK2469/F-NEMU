@@ -13,13 +13,13 @@
 tlb_t tlb;
 
 uint32_t rand(int);
-PTE page_read(lnaddr_t);
+PTE page_read(lnaddr_t, uint32_t);
 
 void init_tlb() {
 	memset(tlb.valid, 0, sizeof tlb.valid);
 }
 
-hwaddr_t tlb_read(lnaddr_t addr) {
+hwaddr_t tlb_read(lnaddr_t addr, uint32_t len) {
 	tlb_addr temp;
 	temp.addr = addr;
 	uint32_t col = temp.col;
@@ -39,7 +39,7 @@ hwaddr_t tlb_read(lnaddr_t addr) {
 	if(full) line_ = rand(addr) & LINE_MASK;
 	tlb.valid[line_] = true;
 	tlb.flag[line_] = flag;
-	tlb.data[line_] = page_read(addr);
+	tlb.data[line_] = page_read(addr, len);
 	return (tlb.data[line_].page_frame << 12) + col;
 }
 

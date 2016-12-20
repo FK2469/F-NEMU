@@ -10,7 +10,7 @@ static void do_execute () {
 //	panic("please implement me");
 	if(MSB(op_src->val) == 1 && MSB(result) != MSB(op_src->val))
 		cpu.OF = 1; else cpu.OF = 0;
-	Update_EFLAGS(result);
+	Updata_EFLAGS(result);
 	print_asm_template1();
 }
 

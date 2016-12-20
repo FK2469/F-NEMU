@@ -4,7 +4,7 @@
 
 char *exec_file = NULL;
 
-static char *strtab = NULL;
+/*static*/ char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
 
@@ -75,11 +75,11 @@ void load_elf_tables(int argc, char *argv[]) {
 
 	free(sh);
 	free(shstrtab);
+//	printf("%s\n", strtab + 11);
 	assert(strtab != NULL && symtab != NULL);
 
 	fclose(fp);
 }
-
 
 int find_var(char *str) {
 	int i;
@@ -92,7 +92,7 @@ int find_var(char *str) {
 bool find_func(int addr, char *str) {
 	int i;
 	for(i = 0; i < nr_symtab_entry; ++ i) {
-		//printf("%x %x\n", symtab[i].st_value, symtab[i].st_value + symtab[i].st_size);
+	//	printf("%x %x\n", symtab[i].st_value, symtab[i].st_value + symtab[i].st_size);
 		if(addr >= symtab[i].st_value && addr < symtab[i].st_value + symtab[i].st_size) {
 			strcpy(str, strtab + symtab[i].st_name);
 		//	printf("*\n");
@@ -101,7 +101,6 @@ bool find_func(int addr, char *str) {
 	}
 	return false;
 }
-
 
 void print() {
 	int i;

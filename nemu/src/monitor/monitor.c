@@ -11,8 +11,12 @@ void init_regex();
 void init_wp_list();
 void init_ddr3();
 void init_cache();
-void init_sreg();
 void init_reg();
+void init_seg();
+#ifdef HAS_DEVICE
+void init_device();
+void init_sdl();
+#endif
 
 FILE *log_fp = NULL;
 
@@ -41,6 +45,11 @@ void init_monitor(int argc, char *argv[]) {
 	/* Initialize the watchpoint link list. */
 	init_wp_list();
 
+#ifdef HAS_DEVICE
+	init_device();
+
+	init_sdl();
+#endif
 	/* Display welcome message. */
 	welcome();
 }
@@ -93,13 +102,10 @@ void restart() {
 	/* Initialize DRAM. */
 	init_ddr3();
 
-       
 	/* Initialize cache. */
 	init_cache();
-	
+
 	init_reg();
-	
-	/*Initialize sreg. */
-	init_sreg();
-	printf("init_sreg()\n");
+
+	init_seg();
 }

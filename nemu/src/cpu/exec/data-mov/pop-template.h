@@ -3,7 +3,7 @@
 #define instr pop
 
 static void do_execute() {
-	DATA_TYPE result = swaddr_read(cpu.esp, DATA_BYTE,R_SS);
+	DATA_TYPE result = swaddr_read(cpu.esp, DATA_BYTE, R_SS);
 	cpu.esp += DATA_BYTE;
 	OPERAND_W(op_src, result); 
 	print_asm_template1();

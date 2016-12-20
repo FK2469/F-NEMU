@@ -50,6 +50,7 @@ PAL_InitUI(
    iSize = PAL_MKFGetChunkSize(CHUNKNUM_SPRITEUI, gpGlobals->f.fpDATA);
    if (iSize < 0)
    {
+//   HIT_GOOD_TRAP;
       return -1;
    }
 
@@ -718,8 +719,10 @@ PAL_LoadObjectDesc(
    //
    // Load the description data
    //
+//   Log("%x",(int)buf);
    while (fgets(buf, 512, fp) != NULL)
    {
+//	HIT_GOOD_TRAP;
       p = strchr(buf, '=');
       if (p == NULL)
       {
