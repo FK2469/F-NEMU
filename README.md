@@ -1,20 +1,20 @@
-# ICS2015 Programming Assignment
+# F-NEMU
 
-This project is the programming assignment of the class ICS(Introduction to Computer System) in Department of Computer Science and Technology, NanJing University.
+This project is inspired by the programming assignment of the class Introduction to Computer System in Department of Computer Science and Technology, NanJing University.
 
 For the guide of this programming assignment, refer to http://nju-ics.gitbooks.io/ics2015-programming-assignment/content/
 
-The following subprojects/components are included. Some of them are not fully implemented.
-* NEMU
+The following subprojects/components are included. 
+* F-NEMU
 * testcase
 * newlib
 * kernel
 * typing game
-* NEMU-PAL
+* PAL
 
-## NEMU
+## F-NEMU
 
-NEMU(NJU Emulator) is a simple but complete full-system x86 emulator designed for teaching. It is the main part of this programming assignment. Small x86 programs can run under NEMU. The main features of NEMU include
+F-NEMU is a simple but complete full-system x86 emulator designed for teaching. It is the main part of this programming assignment. Small x86 programs can run under F-NEMU. The main features of F-NEMU include
 * a small monitor with a simple debugger
  * single step
  * register/memory examination
@@ -38,11 +38,11 @@ NEMU(NJU Emulator) is a simple but complete full-system x86 emulator designed fo
 
 ## testcase
 
-Some small C programs to test the implementation of NEMU.
+Some small C programs to test the implementation of F-NEMU.
 
 ## newlib
 
-newlib(https://sourceware.org/newlib) is a C library for embedding systems. It requires minimal run-time support and is very friendly to NEMU.
+newlib(https://sourceware.org/newlib) is a C library for embedding systems. It requires minimal run-time support and is very friendly to F-NEMU.
 
 ## kernel
 
@@ -60,8 +60,10 @@ This is the simplified version of Nanos(http://cslab.nju.edu.cn/opsystem). It is
 
 ## typing game
 
-This is a fork of the demo of NJU 2013 oslab0(the origin repository has been deleted, but we have a fork of it -- https://github.com/nju-ics/os-lab0). It is ported to NEMU.
+This is a fork of the demo of NJU 2013 oslab0(the origin repository has been deleted, but we have a fork of it -- https://github.com/nju-ics/os-lab0). It is ported to F-NEMU.
 
-## NEMU-PAL
+## PAL
 
-This is a fork of Wei Mingzhi's SDLPAL(https://github.com/CecilHarvey/sdlpal). It is obtained by refactoring the original SDLPAL, as well as porting to NEMU.
+This is a fork of Wei Mingzhi's SDLPAL(https://github.com/CecilHarvey/sdlpal). It is obtained by refactoring the original SDLPAL, as well as porting to F-NEMU.
+
+The data files required for running the game are not included with the source package due to copyright issues. You must obtain them from the original CD. But you can get data files for testing from [there](https://pan.baidu.com/s/1jJJmvDs), and the code is `rf1z` .
